@@ -223,13 +223,15 @@ class TestUniformDataLifetime(unittest.TestCase):
         obj.main()
 
 
-class TestLinuxReqscaleAndDataLifetime(unittest.TestCase):
+####################REQUEST SCALE#################################
+class TestRequestPositive(unittest.TestCase):
     def test_run(self):
         class LocalExperiment(experiment.Experiment):
             def setup_workload(self):
                 self.conf['workload_class'] = "LinuxRequestScaleAgingWrite"
+                self.conf['workload_class'] = "LinuxRequestScaleWorkloadPositive"
 
-        para = experiment.get_shared_nolist_para_dict(expname="linux-request-exp",
+        para = experiment.get_shared_nolist_para_dict(expname="exp_request_positive",
                                                       lbabytes=256*MB)
         para.update(
             {
@@ -246,6 +248,30 @@ class TestLinuxReqscaleAndDataLifetime(unittest.TestCase):
         obj = LocalExperiment( Parameters(**para) )
         obj.main()
 
+class TestRequestNegative(unittest.TestCase):
+    def test_run(self):
+        class LocalExperiment(experiment.Experiment):
+            def setup_workload(self):
+                self.conf['workload_class'] = "LinuxRequestScaleAgingWrite"
+                self.conf['workload_class'] = "LinuxRequestScaleWorkloadNegative"
+
+        para = experiment.get_shared_nolist_para_dict(expname="exp_request_negative",
+                                                      lbabytes=256*MB)
+        para.update(
+            {
+                'device_path': "/dev/loop0",
+                'ftl' : 'ftlcounter',
+                'enable_simulation': True,
+                #'dump_ext4_after_workload': True,
+                'filesystem': "f2fs",
+                'only_get_traffic': False,
+                'trace_issue_and_complete': True,
+            })
+
+        Parameters = collections.namedtuple("Parameters", ','.join(para.keys()))
+        obj = LocalExperiment( Parameters(**para) )
+        obj.main()
+##################################################################
 # class Test_TraceAndSimulateLinuxDD(unittest.TestCase):
     # def test_run(self):
         # class LocalExperiment(experiment.Experiment):

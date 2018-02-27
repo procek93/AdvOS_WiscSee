@@ -86,6 +86,7 @@ class SimpleRandReadWrite(Workload):
     def stop(self):
         pass
 
+####################REQUEST SCALE#################################
 class LinuxRequestScaleAgingWrite(Workload):
     def __init__(self, confobj, workload_conf_key = None):
         super(LinuxRequestScaleAgingWrite, self).__init__(confobj, workload_conf_key)
@@ -99,6 +100,45 @@ class LinuxRequestScaleAgingWrite(Workload):
 
     def stop(self):
         pass
+
+
+class LinuxRequestScaleWorkloadPositive(Workload):
+    def __init__(self, confobj, workload_conf_key = None):
+        super(LinuxRequestScaleWorkloadPositive, self).__init__(confobj, workload_conf_key)
+
+    def run(self):
+        mnt = self.conf["fs_mount_point"]
+        cmd = "~/AdvOS_WiscSee/request_size_workload_positive".format(mnt)
+        print cmd
+        subprocess.call(cmd, shell=True)
+        subprocess.call("sync")
+
+    def stop(self):
+        pass
+
+class LinuxRequestScaleWorkloadNegative(Workload):
+    def __init__(self, confobj, workload_conf_key = None):
+        super(LinuxRequestScaleWorkloadNegative, self).__init__(confobj, workload_conf_key)
+
+    def run(self):
+        mnt = self.conf["fs_mount_point"]
+        cmd = "~/AdvOS_WiscSee/request_size_workload_negative".format(mnt)
+        print cmd
+        subprocess.call(cmd, shell=True)
+        subprocess.call("sync")
+
+    def stop(self):
+        pass
+##################################################################
+
+#########################LOCALITY#################################
+
+##################################################################
+
+#########################DEATH TIME###############################
+
+##################################################################
+
 # class LinuxDD(Workload):
     # def __init__(self, confobj, workload_conf_key = None):
         # super(LinuxDD, self).__init__(confobj, workload_conf_key)
