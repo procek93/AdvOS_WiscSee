@@ -47,6 +47,7 @@ main()
                 if( status == -1 )
                 {
                     //printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+                    closedir(my_strings[0]);
                     return;
                 }
 
@@ -56,6 +57,7 @@ main()
                 if ( status == -1 )
                 {
                     //printf( "ERROR: OTHER\n" );
+                    closedir(my_strings[0]);
                     return;
                 }  
 
@@ -73,6 +75,7 @@ main()
             if( status == -1 )
             {
                 //printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+                closedir(my_strings[0]);
                 return;
             }
 
@@ -82,6 +85,7 @@ main()
             if ( status == -1 )
             {
                 //printf( "ERROR: OTHER\n" );
+                closedir(my_strings[0]);
                 return;
             }  
 
@@ -92,9 +96,13 @@ main()
     }
     else
     {
+        closedir(my_strings[0]);
         return;
         //printf( "ERROR: OTHER\n" );
     }
+
+    closedir(my_strings[0]);
+    return;
 }
 
 int file_unlink( const char *file_path, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
