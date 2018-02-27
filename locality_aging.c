@@ -7,6 +7,8 @@
 #include <ftw.h>
 #include <unistd.h>
 
+#define WRITE_REQUEST_SIZE        16
+
 /* directory names */
 
 const char * my_strings[] = {"loc_root", "loc_dirA", "loc_dirB", "loc_dirC", "loc_dirD", "loc_dirE", "loc_dirF", "loc_dirG", "loc_dirH", "loc_dirI", "loc_dirJ"};
@@ -15,7 +17,7 @@ int cmd_rmrf( char * path);
 
 main()
 {
-    DIR * dir = opendir("loc_root");
+    DIR * dir = opendir(my_strings[0]);
     int status = 0;
 
 
@@ -25,7 +27,7 @@ main()
         printf( "ROOT FOUND\n" );
         printf( "DELETING ROOT\n");
         
-        status = cmd_rmrf( "loc_root" );
+        status = cmd_rmrf( my_strings[0] );
         if ( status == -1 )
         {
             printf( "ERROR: OTHER\n" );
@@ -33,11 +35,25 @@ main()
         else
         {
             printf( "DELETED ROOT\n" );
+
+            /* directory does not exist */
+            status = create_file_hierarchy_workload();
+
+            if( status == -1 )
+            {
+                printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+            }
         }
     }
     else if (ENOENT == errno)
     {
         /* directory does not exist */
+        status = create_file_hierarchy_workload();
+
+        if( status == -1 )
+        {
+            printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+        }
     }
     else
     {
@@ -65,16 +81,148 @@ int create_file_hierarchy_workload( void )
     int status = 0;
     struct stat st = {0};
 
-    if( stat("loc_root", &st) == -1 )
+    if( stat(my_strings[0], &st) == -1 )
     {
-       status = mkdir("loc_root", 0700);
+       status = mkdir(my_strings[0], 0700);
 
-       if( status == 0)
+       if( status == 0 )
        {
-           chdir("loc_root");
+           chdir(my_strings[0]);
+
+           /* create all of the directories */
+
+           for(int x = 1; x < 11; x++)
+           {
+                if( status == 0)
+                {
+                    if( (stat(my_strings[x], &st) == -1) )
+                    {
+                        status = mkdir(my_strings[x], 0700);
+                    }
+                    else
+                    {
+                        printf( "ERROR: DIRECTORY '%s' ALREADY EXISTS\n", my_strings[x]);
+                        return -1;
+                    }
+                }
+                else
+                {
+                    printf("ERROR: COULD NOT CREATE DIRECTORY '%s'\n", my_strings[x]);
+                    return -1;
+
+                }
+           }
+
+           /* write all of the files */
+           for(int y = 1; y < 11; y++)
+           {
+                /* walk into folder */
+                chdir(my_strings[y]);
+
+                /* create file pool */
+                status = create_file_pools( WRITE_REQUEST_SIZE );
+
+                if(status == -1)
+                {
+                    printf("ERROR: COULD NOT CREATE FILE POOL\n");
+                    return -1;
+                }
+                
+                /* walk up to parent */
+                chdir("..");
+           }
+       }
+       else
+       {
+            printf("ERROR: COULD NOT CREATE DIRECTORY '%s'\n", my_strings[0]);
+            return -1;
        }
     }
 
+    return 0;
+}
+
+/* in this workload, we aim to fill 200MB, so 20MB * 10 Directories */
+int create_file_pools( int request_size_bytes )
+{
+    FILE *f;
+    char filename_buf[20];
+
+    int status = 0;
+
+    int total_directory_size_bytes = 20 * 1024; //20MB
+    int total_number_of_files = total_directory_size_bytes / request_size_bytes;
+
+    int total_number_of_files_divided = total_number_of_files / 2;
+
+    int big_file_size = total_number_of_files_divided * request_size_bytes;
+    /* request size is in bytes */
+    if( request_size_bytes > total_directory_size_bytes )
+    {
+        /* can't have request bigger than our theoretical limit for our directory */
+        return -1;
+    }
+
+    /* create all of the small files */
+    for(int x = 0; x < total_number_of_files; x++)
+    {
+        sprintf(filename_buf, "small_file_%d.txt", x);
+
+        f = fopen(filename_buf, "w");
+
+        if( f == NULL)
+        {
+            printf("ERROR: COULD NOT OPEN FILE\n");
+            return -1;
+        }
+
+        /* write the request size number of bytes to the file */
+        for(int i = 0; i < request_size_bytes; i++)
+        {
+            fprintf(f, "A");
+        }
+
+        fclose(f);
+    }
+
+    /* delete the first half of the files (~10MB) */
+    for(int y = 0; y < total_number_of_files_divided; y++)
+    {
+        sprintf(filename_buf, "small_file_%d.txt", y);
+
+        status = remove( filename_buf );
+
+        if( status != 0)
+        {
+            printf("ERROR: COULD NOT DELETE FILE\n");
+            return -1;
+        }
+
+    }
+
+    /*EDIT HERE FOR GROUP BY DEATH TIME -- just remove the below */
+    /*REST OF THIS IS TO MODIFY AGING BASED ON THE WORKLOAD*/
+    /*FOR LOCALITY, REWRITE LARGE PARTS OF THE FILE A BUNCH */
+    /*FOR REQUEST SIZE, JUST LEAVE IT BE */
+
+    /* write a large file */
+
+    f = fopen("large_file.txt", "w");
+
+    if( f == NULL )
+    {
+        printf("ERROR: COULD NOT OPEN FILE\n");
+        return -1;
+    }
+
+    for(int j = 0; j < big_file_size; j++)
+    {
+        fprintf(f, "B");
+    }
+    
+    fclose(f);
+
+    return 0;
 }
 
 
