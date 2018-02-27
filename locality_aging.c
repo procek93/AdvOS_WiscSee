@@ -11,7 +11,7 @@
 
 /* directory names */
 
-const char * my_strings[] = {"loc_root", "loc_dirA", "loc_dirB", "loc_dirC", "loc_dirD", "loc_dirE", "loc_dirF", "loc_dirG", "loc_dirH", "loc_dirI", "loc_dirJ"};
+char * my_strings[] = {"loc_root", "loc_dirA", "loc_dirB", "loc_dirC", "loc_dirD", "loc_dirE", "loc_dirF", "loc_dirG", "loc_dirH", "loc_dirI", "loc_dirJ"};
 
 int cmd_rmrf( char * path);
 
@@ -81,6 +81,8 @@ int create_file_hierarchy_workload( void )
     int status = 0;
     struct stat st = {0};
 
+    int x, y;
+
     if( stat(my_strings[0], &st) == -1 )
     {
        status = mkdir(my_strings[0], 0700);
@@ -91,7 +93,7 @@ int create_file_hierarchy_workload( void )
 
            /* create all of the directories */
 
-           for(int x = 1; x < 11; x++)
+           for(x = 1; x < 11; x++)
            {
                 if( status == 0)
                 {
@@ -114,7 +116,7 @@ int create_file_hierarchy_workload( void )
            }
 
            /* write all of the files */
-           for(int y = 1; y < 11; y++)
+           for(y = 1; y < 11; y++)
            {
                 /* walk into folder */
                 chdir(my_strings[y]);
@@ -148,6 +150,8 @@ int create_file_pools( int request_size_bytes )
     FILE *f;
     char filename_buf[20];
 
+    int x, i, y, j;
+
     int status = 0;
 
     int total_directory_size_bytes = 20 * 1024; //20MB
@@ -164,7 +168,7 @@ int create_file_pools( int request_size_bytes )
     }
 
     /* create all of the small files */
-    for(int x = 0; x < total_number_of_files; x++)
+    for(x = 0; x < total_number_of_files; x++)
     {
         sprintf(filename_buf, "small_file_%d.txt", x);
 
@@ -177,7 +181,7 @@ int create_file_pools( int request_size_bytes )
         }
 
         /* write the request size number of bytes to the file */
-        for(int i = 0; i < request_size_bytes; i++)
+        for(i = 0; i < request_size_bytes; i++)
         {
             fprintf(f, "A");
         }
@@ -186,7 +190,7 @@ int create_file_pools( int request_size_bytes )
     }
 
     /* delete the first half of the files (~10MB) */
-    for(int y = 0; y < total_number_of_files_divided; y++)
+    for(y = 0; y < total_number_of_files_divided; y++)
     {
         sprintf(filename_buf, "small_file_%d.txt", y);
 
@@ -215,7 +219,7 @@ int create_file_pools( int request_size_bytes )
         return -1;
     }
 
-    for(int j = 0; j < big_file_size; j++)
+    for(j = 0; j < big_file_size; j++)
     {
         fprintf(f, "B");
     }
