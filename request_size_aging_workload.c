@@ -225,6 +225,8 @@ int create_file_pools( int request_size_bytes )
         fclose(f);
     }
 
+    #if 0
+
     /* delete the first half of the files (~10MB) */
     for(y = 0; y < total_number_of_files_divided; y++)
     {
@@ -261,6 +263,7 @@ int create_file_pools( int request_size_bytes )
     }
     
     fclose(f);
+    #endif
 
     return 0;
 }
