@@ -48,11 +48,12 @@ main()
                     perror ("open");
                     return;
             }
-
+            printf("begining file read\n");
             while((ret_in = read (input_fd, &buffer, READ_REQUEST_SIZE)) > 0)
             {
-                printf("reading file...\n");
+//                printf("reading file...\n");
             }
+            printf("file read complete\n");
 
             close(input_fd);
 

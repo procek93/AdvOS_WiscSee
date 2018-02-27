@@ -9,7 +9,7 @@
 #include <ftw.h>
 #include <unistd.h>
 
-#define READ_REQUEST_SIZE        1024 * (1/2)
+#define READ_REQUEST_SIZE        128
 /* directory names */
 
 char * my_strings[] = {"loc_root", "loc_dirA", "loc_dirB", "loc_dirC", "loc_dirD", "loc_dirE", "loc_dirF", "loc_dirG", "loc_dirH", "loc_dirI", "loc_dirJ"};
@@ -49,10 +49,12 @@ main()
                     return;
             }
 
+            printf("begining file read\n");
             while((ret_in = read (input_fd, &buffer, READ_REQUEST_SIZE)) > 0)
             {
-                printf("reading file...\n");
+//                printf("reading file...\n");
             }
+            printf("file read complete\n");
 
             close(input_fd);
 
