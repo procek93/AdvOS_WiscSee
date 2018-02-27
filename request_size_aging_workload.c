@@ -7,7 +7,7 @@
 #include <ftw.h>
 #include <unistd.h>
 
-#define WRITE_REQUEST_SIZE        16
+#define WRITE_REQUEST_SIZE        1024 * 2
 
 /* directory names */
 
