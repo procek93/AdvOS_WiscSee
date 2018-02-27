@@ -47,7 +47,7 @@ main()
                 if( status == -1 )
                 {
                     //printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
-                    closedir(my_strings[0]);
+                    closedir(dir);
                     return;
                 }
 
@@ -57,7 +57,7 @@ main()
                 if ( status == -1 )
                 {
                     //printf( "ERROR: OTHER\n" );
-                    closedir(my_strings[0]);
+                    closedir(dir);
                     return;
                 }  
 
@@ -75,7 +75,7 @@ main()
             if( status == -1 )
             {
                 //printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
-                closedir(my_strings[0]);
+                closedir(dir);
                 return;
             }
 
@@ -85,7 +85,7 @@ main()
             if ( status == -1 )
             {
                 //printf( "ERROR: OTHER\n" );
-                closedir(my_strings[0]);
+                closedir(dir);
                 return;
             }  
 
@@ -96,12 +96,12 @@ main()
     }
     else
     {
-        closedir(my_strings[0]);
+        closedir(dir);
         return;
         //printf( "ERROR: OTHER\n" );
     }
 
-    closedir(my_strings[0]);
+    closedir(dir);
     return;
 }
 

@@ -59,7 +59,7 @@ main()
                     if(status != 0)
                     {
                         printf("failed to erase file\n");
-                        closedir(my_strings[x]);
+                        closedir(dir);
                         return;
                     }
                     deleted_count++;
@@ -98,15 +98,15 @@ main()
     }
     else if (ENOENT == errno)
     {
-        closedir(my_strings[0]);
+        closedir(dir);
         return;
     }
     else
     {
-        closedir(my_strings[0]);
+        closedir(dir);
         return;
     }
 
-    closedir(my_strings[0]);
+    closedir(dir);
     return;
 }
