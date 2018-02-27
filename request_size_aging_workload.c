@@ -20,44 +20,80 @@ main()
     DIR * dir = opendir(my_strings[0]);
     int status = 0;
 
+    int loop_count = 1000;
+
 
     if ( dir )
     {
         /* root exists */
-        printf( "ROOT FOUND\n" );
-        printf( "DELETING ROOT\n");
+        //printf( "ROOT FOUND\n" );
+        //printf( "DELETING ROOT\n");
         
         status = cmd_rmrf( my_strings[0] );
         if ( status == -1 )
         {
-            printf( "ERROR: OTHER\n" );
+            //printf( "ERROR: OTHER\n" );
+            return;
         } 
         else
         {
-            printf( "DELETED ROOT\n" );
+            //printf( "DELETED ROOT\n" );
 
-            /* directory does not exist */
-            status = create_file_hierarchy_workload();
-
-            if( status == -1 )
+            while (loop_count != 0)
             {
-                printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+                /* directory does not exist */
+                status = create_file_hierarchy_workload();
+
+                if( status == -1 )
+                {
+                    //printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+                    return;
+                }
+
+                /* now delete the entire heirarchy and start again */
+                status = cmd_rmrf( my_strings[0] );
+
+                if ( status == -1 )
+                {
+                    //printf( "ERROR: OTHER\n" );
+                    return;
+                }  
+
+                loop_count--;
             }
         }
     }
     else if (ENOENT == errno)
     {
-        /* directory does not exist */
-        status = create_file_hierarchy_workload();
-
-        if( status == -1 )
+        while (loop_count != 0)
         {
-            printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+            /* directory does not exist */
+            status = create_file_hierarchy_workload();
+
+            if( status == -1 )
+            {
+                //printf("ERROR: COULD CREATE FILE HEIRARCHY WORKLOAD\n");
+                return;
+            }
+
+            /* now delete the entire heirarchy and start again */
+            status = cmd_rmrf( my_strings[0] );
+
+            if ( status == -1 )
+            {
+                //printf( "ERROR: OTHER\n" );
+                return;
+            }  
+
+            loop_count--;
         }
+
+
     }
     else
     {
-        printf( "ERROR: OTHER\n" );
+        return;
+        //printf( "ERROR: OTHER\n" );
     }
 }
 
