@@ -25,7 +25,7 @@ main()
 
     int loop_count = 1000;
 
-    int x, y, z;
+    int x, y, z, i;
     int input_fd;
 
     ssize_t ret_in;
