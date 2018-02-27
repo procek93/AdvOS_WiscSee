@@ -29,7 +29,6 @@ main()
     int input_fd;
 
     ssize_t ret_in;
-    char buffer[READ_REQUEST_SIZE];    
 
     char filename_buf[20];  
 
