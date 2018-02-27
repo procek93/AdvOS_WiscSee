@@ -185,8 +185,6 @@ int create_file_hierarchy_workload( void )
             return -1;
        }
     }
-
-    closedir(my_strings[0]);
     return;
 }
 
@@ -234,8 +232,6 @@ int create_file_pools( int request_size_bytes )
 
         fclose(f);
     }
-
-    #endif
 
     return 0;
 }
