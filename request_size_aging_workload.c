@@ -190,7 +190,7 @@ int create_file_pools( int request_size_bytes )
 
     int status = 0;
 
-    int total_directory_size_bytes = 20 * 1024 * 1024; //20MB ( 1kb * 1024 * 20)
+    int total_directory_size_bytes = 10 * 1024 * 1024; //20MB ( 1kb * 1024 * 20)
     int total_number_of_files = total_directory_size_bytes / request_size_bytes;
 
     int total_number_of_files_divided = total_number_of_files / 2;
@@ -225,7 +225,7 @@ int create_file_pools( int request_size_bytes )
         fclose(f);
     }
 
-    #if 0
+    #if 1
 
     /* delete the first half of the files (~10MB) */
     for(y = 0; y < total_number_of_files_divided; y++)
